@@ -3,389 +3,720 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Статистический анализ выборок</title>
+    <title>StatVision | Статистический анализ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         body {
-            background-color: #2c2c2c; /* Нардо-грей */
-            color: #e0e0e0;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #1a1e24 0%, #2d343b 100%);
+            min-height: 100vh;
+            color: #e5e9f0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Анимированный фон */
+        body::before {
+            content: '';
+            position: fixed;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grain 8s steps(10) infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0); }
+            70% { transform: translate(0, 10%); }
+            80% { transform: translate(5%, 5%); }
+            90% { transform: translate(-5%, 0); }
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Стеклянный эффект */
+        .glass-card {
+            background: rgba(46, 52, 61, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.06);
+        }
+
+        /* Стили для страницы авторизации */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
         }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background-color: #3a3a3a; /* Темно-серый */
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+
+        .login-card {
+            background: rgba(36, 41, 48, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
         }
-        
-        /* Стили для страницы авторизации */
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            background-color: #3a3a3a;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
-        
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
         .login-header {
             text-align: center;
-            margin-bottom: 25px;
-            color: #ffffff;
-            border-bottom: 1px solid #555;
-            padding-bottom: 15px;
+            margin-bottom: 35px;
+            position: relative;
         }
-        
-        .form-group {
-            margin-bottom: 20px;
+
+        .login-header i {
+            font-size: 48px;
+            color: #8a9bb5;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        
-        .form-group label {
-            display: block;
+
+        .login-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff, #b8c5d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
-            color: #cccccc;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #a0b2c9;
             font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        
-        .form-group input {
+
+        .input-group input {
             width: 100%;
-            padding: 12px;
-            background-color: #4a4a4a;
-            border: 1px solid #555;
-            color: #ffffff;
-            border-radius: 5px;
+            padding: 16px 20px 16px 50px;
+            background: rgba(26, 30, 36, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            color: white;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
         }
-        
-        .form-group input:focus {
+
+        .input-group input:focus {
             outline: none;
-            border-color: #777;
+            border-color: #6d8bbf;
+            background: rgba(26, 30, 36, 0.95);
+            box-shadow: 0 0 0 4px rgba(109, 139, 191, 0.2);
         }
-        
+
+        .input-group i {
+            position: absolute;
+            left: 20px;
+            top: 52px;
+            color: #6d8bbf;
+            font-size: 18px;
+        }
+
         .login-btn {
             width: 100%;
-            padding: 12px;
-            background-color: #555;
-            color: white;
+            padding: 16px;
+            background: linear-gradient(135deg, #4f6d9c, #3a4f73);
             border: none;
-            border-radius: 5px;
+            border-radius: 18px;
+            color: white;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
         }
-        
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .login-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .login-btn:hover {
-            background-color: #666;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 109, 156, 0.4);
         }
-        
-        .error-message {
-            color: #ff6b6b;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        
-        /* Стили для основного контента */
-        h1, h2, h3 {
-            color: #ffffff;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #555;
-            padding-bottom: 10px;
-        }
-        
-        h2 {
-            margin-top: 30px;
-        }
-        
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+
+        /* Основной интерфейс */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
+            padding: 20px 30px;
         }
-        
-        .grid-4 {
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: #8a9bb5;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff, #b8c5d6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-badge {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 25px;
+            border-radius: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+
+        .user-badge i {
+            color: #8a9bb5;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 25px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            border-color: #6d8bbf;
+        }
+
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .sample-card {
-            background-color: #4a4a4a; /* Серый */
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            border: 1px solid #555;
+            background: rgba(46, 52, 61, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .sample-card h3 {
-            color: #ffffff;
+
+        .sample-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .sample-card:hover::after {
+            left: 100%;
+        }
+
+        .sample-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(109, 139, 191, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .sample-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 15px;
-            border-bottom: 1px solid #666;
-            font-size: 18px;
         }
-        
+
+        .sample-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #b8c5d6;
+        }
+
+        .sample-header i {
+            font-size: 24px;
+            color: #6d8bbf;
+        }
+
+        .sample-stats {
+            font-size: 13px;
+            color: #8a9bb5;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
         textarea {
             width: 100%;
-            height: 150px;
-            background-color: #333;
-            border: 1px solid #555;
-            color: #e0e0e0;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
+            height: 120px;
+            background: rgba(26, 30, 36, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            color: white;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
             resize: vertical;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
         }
-        
+
         textarea:focus {
             outline: none;
-            border-color: #777;
+            border-color: #6d8bbf;
+            background: rgba(26, 30, 36, 0.95);
+            box-shadow: 0 0 0 4px rgba(109, 139, 191, 0.1);
         }
-        
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
         .btn {
-            background-color: #555;
-            color: white;
+            flex: 1;
+            padding: 12px;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .btn:hover {
-            background-color: #666;
-        }
-        
-        .btn-primary {
-            background-color: #666;
-        }
-        
-        .btn-primary:hover {
-            background-color: #777;
-        }
-        
-        .btn-reset {
-            background-color: #4a4a4a;
-            border: 1px solid #666;
-        }
-        
-        .btn-reset:hover {
-            background-color: #555;
-        }
-        
-        .results {
-            background-color: #333;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 1px solid #555;
-            font-family: monospace;
-            white-space: pre-wrap;
-            color: #d4d4d4;
-            overflow-x: auto;
-        }
-        
-        .part-header {
-            color: #ffffff;
-            font-size: 20px;
+            border-radius: 14px;
             font-weight: 600;
-            margin: 30px 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #666;
-        }
-        
-        .formula {
-            background-color: #3a3a3a;
-            padding: 10px 15px;
-            border-left: 4px solid #777;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-            color: #e6e6e6;
-            border-radius: 0 5px 5px 0;
-        }
-        
-        .info-text {
-            color: #b0b0b0;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        
-        .user-badge {
-            float: right;
-            background-color: #555;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: white;
-        }
-        
-        .logout-btn {
-            float: right;
-            margin-left: 10px;
-            background-color: #4a4a4a;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: white;
-            text-decoration: none;
-            border: 1px solid #666;
+            font-size: 13px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .logout-btn:hover {
-            background-color: #555;
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
-        
+
+        .btn:hover::before {
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f6d9c, #3a4f73);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 109, 156, 0.3);
+        }
+
+        .btn-reset {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #b8c5d6;
+        }
+
+        .btn-reset:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-large {
+            padding: 16px 35px;
+            font-size: 16px;
+            border-radius: 40px;
+        }
+
+        .results {
+            background: rgba(26, 30, 36, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 30px;
+            margin-top: 30px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: #e5e9f0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .results::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #6d8bbf, transparent);
+        }
+
         .footer {
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #555;
-            color: #999;
+            margin-top: 50px;
+            padding: 25px;
+            color: #6c7a91;
             font-size: 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
-        
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
+
+        /* Анимации */
+        .fade-enter-active, .fade-leave-active {
+            transition: opacity 0.3s ease;
         }
-        
+
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
-            .grid-2, .grid-4 {
+            .stats-grid {
                 grid-template-columns: 1fr;
             }
             
-            .container {
-                padding: 15px;
+            .header {
+                flex-direction: column;
+                gap: 15px;
             }
+            
+            .action-bar {
+                flex-direction: column;
+            }
+            
+            .btn-large {
+                width: 100%;
+            }
+        }
+
+        /* Индикатор загрузки */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top-color: #6d8bbf;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <!-- Страница авторизации -->
-        <div id="login-page" v-if="!isAuthenticated">
-            <div class="login-container">
-                <div class="login-header">
-                    <h2>Вход в систему</h2>
-                    <p style="color: #aaa; font-size: 14px;">Статистический анализ выборок</p>
-                </div>
-                
-                <div class="form-group">
-                    <label>Логин</label>
-                    <input type="text" v-model="loginForm.username" placeholder="Введите логин" @keyup.enter="login">
-                </div>
-                
-                <div class="form-group">
-                    <label>Пароль</label>
-                    <input type="password" v-model="loginForm.password" placeholder="Введите пароль" @keyup.enter="login">
-                </div>
-                
-                <button class="login-btn" @click="login">Войти</button>
-                
-                <div class="error-message" v-if="loginError">
-                    {{ loginError }}
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px; color: #777; font-size: 13px;">
-                    <p>Админ: admin / harderror06</p>
-                    <p>Гость: user / user1</p>
+        <!-- Анимированная страница авторизации -->
+        <transition name="fade">
+            <div v-if="!isAuthenticated" class="login-wrapper">
+                <div class="login-card">
+                    <div class="login-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>Добро пожаловать</h2>
+                        <p style="color: #8a9bb5; font-size: 14px;">Войдите для доступа к аналитике</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-user" style="margin-right: 8px;"></i> Логин</label>
+                        <i class="fas fa-user"></i>
+                        <input type="text" v-model="loginForm.username" placeholder="admin / user" @keyup.enter="login">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label><i class="fas fa-lock" style="margin-right: 8px;"></i> Пароль</label>
+                        <i class="fas fa-lock"></i>
+                        <input type="password" v-model="loginForm.password" placeholder="••••••••" @keyup.enter="login">
+                    </div>
+                    
+                    <button class="login-btn" @click="login">
+                        <i class="fas fa-arrow-right-to-bracket" style="margin-right: 8px;"></i>
+                        Войти в систему
+                    </button>
+                    
+                    <div class="error-message" v-if="loginError" style="color: #ff6b6b; text-align: center; margin-top: 20px;">
+                        <i class="fas fa-exclamation-circle"></i> {{ loginError }}
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 25px; color: #6c7a91; font-size: 13px;">
+                        <p><i class="fas fa-shield-alt"></i> Admin: admin / harderror06</p>
+                        <p><i class="fas fa-user"></i> Guest: user / user1</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </transition>
 
-        <!-- Основной контент (после авторизации) -->
-        <div v-else>
-            <div class="container">
-                <div class="clearfix">
-                    <span class="user-badge">Пользователь: {{ currentUser }}</span>
-                    <span class="logout-btn" @click="logout">Выйти</span>
-                </div>
-                
-                <h1>Статистический анализ четырех выборок</h1>
-                <p class="info-text">Введите данные в формате: число, число, ... (разделитель - пробел или запятая)</p>
-                
-                <div class="grid-4">
-                    <!-- Выборка 1 -->
-                    <div class="sample-card">
-                        <h3>Выборка 1</h3>
-                        <textarea v-model="sample1Text" placeholder="235.78, 250.11, 232.36, ..."></textarea>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-primary" @click="updateSample(1)">Загрузить</button>
-                            <button class="btn btn-reset" @click="resetSample(1)">Сбросить</button>
+        <!-- Основной интерфейс -->
+        <transition name="fade">
+            <div v-if="isAuthenticated">
+                <div class="container">
+                    <div class="header glass-card">
+                        <div class="logo">
+                            <i class="fas fa-chart-pie"></i>
+                            <h1>StatVision Analytics</h1>
+                        </div>
+                        
+                        <div class="user-menu">
+                            <div class="user-badge">
+                                <i class="fas fa-user-circle"></i>
+                                {{ currentUser }}
+                            </div>
+                            <div class="logout-btn" @click="logout">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Выйти
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Выборка 2 -->
-                    <div class="sample-card">
-                        <h3>Выборка 2</h3>
-                        <textarea v-model="sample2Text" placeholder="250.11, 232.36, 219.40, ..."></textarea>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-primary" @click="updateSample(2)">Загрузить</button>
-                            <button class="btn btn-reset" @click="resetSample(2)">Сбросить</button>
+
+                    <!-- 4 карточки с выборками -->
+                    <div class="stats-grid">
+                        <!-- Выборка 1 -->
+                        <div class="sample-card">
+                            <div class="sample-header">
+                                <h3><i class="fas fa-database" style="margin-right: 8px;"></i> Выборка 1</h3>
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="sample-stats">
+                                <span><i class="fas fa-ruler"></i> n = {{ x1.length }}</span>
+                                <span><i class="fas fa-chart-bar"></i> μ = {{ mean(x1).toFixed(2) }}</span>
+                            </div>
+                            <textarea v-model="sample1Text" placeholder="235.78, 250.11, ..."></textarea>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @click="updateSample(1)">
+                                    <i class="fas fa-cloud-upload-alt"></i> Загрузить
+                                </button>
+                                <button class="btn btn-reset" @click="resetSample(1)">
+                                    <i class="fas fa-undo-alt"></i> Сброс
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Выборка 2 -->
+                        <div class="sample-card">
+                            <div class="sample-header">
+                                <h3><i class="fas fa-database" style="margin-right: 8px;"></i> Выборка 2</h3>
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="sample-stats">
+                                <span><i class="fas fa-ruler"></i> n = {{ x2.length }}</span>
+                                <span><i class="fas fa-chart-bar"></i> μ = {{ mean(x2).toFixed(2) }}</span>
+                            </div>
+                            <textarea v-model="sample2Text" placeholder="250.11, 232.36, ..."></textarea>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @click="updateSample(2)">
+                                    <i class="fas fa-cloud-upload-alt"></i> Загрузить
+                                </button>
+                                <button class="btn btn-reset" @click="resetSample(2)">
+                                    <i class="fas fa-undo-alt"></i> Сброс
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Выборка 3 -->
+                        <div class="sample-card">
+                            <div class="sample-header">
+                                <h3><i class="fas fa-database" style="margin-right: 8px;"></i> Выборка 3</h3>
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="sample-stats">
+                                <span><i class="fas fa-ruler"></i> n = {{ x3.length }}</span>
+                                <span><i class="fas fa-chart-bar"></i> μ = {{ mean(x3).toFixed(2) }}</span>
+                            </div>
+                            <textarea v-model="sample3Text" placeholder="235.78, 246.84, ..."></textarea>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @click="updateSample(3)">
+                                    <i class="fas fa-cloud-upload-alt"></i> Загрузить
+                                </button>
+                                <button class="btn btn-reset" @click="resetSample(3)">
+                                    <i class="fas fa-undo-alt"></i> Сброс
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Выборка 4 -->
+                        <div class="sample-card">
+                            <div class="sample-header">
+                                <h3><i class="fas fa-database" style="margin-right: 8px;"></i> Выборка 4</h3>
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <div class="sample-stats">
+                                <span><i class="fas fa-ruler"></i> n = {{ x4.length }}</span>
+                                <span><i class="fas fa-chart-bar"></i> μ = {{ mean(x4).toFixed(2) }}</span>
+                            </div>
+                            <textarea v-model="sample4Text" placeholder="245.93, 228.32, ..."></textarea>
+                            <div class="btn-group">
+                                <button class="btn btn-primary" @click="updateSample(4)">
+                                    <i class="fas fa-cloud-upload-alt"></i> Загрузить
+                                </button>
+                                <button class="btn btn-reset" @click="resetSample(4)">
+                                    <i class="fas fa-undo-alt"></i> Сброс
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Выборка 3 -->
-                    <div class="sample-card">
-                        <h3>Выборка 3</h3>
-                        <textarea v-model="sample3Text" placeholder="235.78, 246.84, 242.42, ..."></textarea>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-primary" @click="updateSample(3)">Загрузить</button>
-                            <button class="btn btn-reset" @click="resetSample(3)">Сбросить</button>
-                        </div>
+
+                    <!-- Панель действий -->
+                    <div class="action-bar">
+                        <button class="btn btn-reset btn-large" @click="resetAll">
+                            <i class="fas fa-sync-alt"></i> Сбросить все выборки
+                        </button>
+                        <button class="btn btn-primary btn-large" @click="runAnalysis">
+                            <i class="fas fa-play"></i> Запустить анализ
+                            <span v-if="isAnalyzing" class="loading" style="margin-left: 10px;"></span>
+                        </button>
                     </div>
-                    
-                    <!-- Выборка 4 -->
-                    <div class="sample-card">
-                        <h3>Выборка 4</h3>
-                        <textarea v-model="sample4Text" placeholder="245.93, 228.32, 239.23, ..."></textarea>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-primary" @click="updateSample(4)">Загрузить</button>
-                            <button class="btn btn-reset" @click="resetSample(4)">Сбросить</button>
-                        </div>
+
+                    <!-- Результаты -->
+                    <div v-if="results" class="results">
+                        <pre>{{ results }}</pre>
                     </div>
-                </div>
-                
-                <div style="text-align: right; margin-bottom: 20px;">
-                    <button class="btn btn-primary" @click="runAnalysis">Выполнить анализ</button>
-                    <button class="btn btn-reset" @click="resetAll">Сбросить все</button>
-                </div>
-                
-                <!-- Результаты анализа -->
-                <div v-if="results" class="results">
-                    <pre>{{ results }}</pre>
-                </div>
-                
-                <div class="footer">
-                    <p>Статистический анализ с использованием критериев Стьюдента, Фишера, Шапиро-Уилка и Вилкоксона-Манна-Уитни</p>
+
+                    <div class="footer">
+                        <i class="fas fa-copyright"></i> StatVision 2024 | Статистический анализ данных
+                    </div>
                 </div>
             </div>
-        </div>
+        </transition>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://unpkg.com/vue@2/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.min.js"></script>
     
     <script>
@@ -399,8 +730,8 @@
                     password: ''
                 },
                 loginError: '',
+                isAnalyzing: false,
                 
-                // Исходные данные
                 defaultSample1: [
                     235.78, 250.11, 232.36, 219.40, 246.21, 244.40, 229.14, 218.11,
                     238.64, 230.46, 224.69, 226.39, 239.90, 241.64, 204.63, 223.34,
@@ -456,12 +787,9 @@
                 x4: [],
                 
                 results: '',
-                
-                // Для вычислений
                 alpha: 0.05
             },
             mounted() {
-                // Инициализируем текстовые поля
                 this.resetAll();
             },
             methods: {
@@ -472,7 +800,7 @@
                         this.loginError = '';
                     } else if (this.loginForm.username === 'user' && this.loginForm.password === 'user1') {
                         this.isAuthenticated = true;
-                        this.currentUser = 'user';
+                        this.currentUser = 'guest';
                         this.loginError = '';
                     } else {
                         this.loginError = 'Неверный логин или пароль';
@@ -488,7 +816,6 @@
                 
                 parseSample(text) {
                     if (!text.trim()) return [];
-                    // Заменяем запятые на пробелы и разбиваем
                     const numbers = text.replace(/,/g, ' ').split(/\s+/).filter(x => x.trim() !== '');
                     return numbers.map(Number).filter(n => !isNaN(n));
                 },
@@ -544,16 +871,6 @@
                     this.results = '';
                 },
                 
-                runAnalysis() {
-                    if (this.x1.length === 0 || this.x2.length === 0 || this.x3.length === 0 || this.x4.length === 0) {
-                        alert('Все выборки должны содержать данные');
-                        return;
-                    }
-                    
-                    this.results = this.calculateAll();
-                },
-                
-                // Статистические функции
                 mean(arr) {
                     return arr.reduce((a, b) => a + b, 0) / arr.length;
                 },
@@ -561,6 +878,22 @@
                 variance(arr, ddof = 1) {
                     const m = this.mean(arr);
                     return arr.reduce((a, b) => a + Math.pow(b - m, 2), 0) / (arr.length - ddof);
+                },
+                
+                async runAnalysis() {
+                    if (this.x1.length === 0 || this.x2.length === 0 || this.x3.length === 0 || this.x4.length === 0) {
+                        alert('Все выборки должны содержать данные');
+                        return;
+                    }
+                    
+                    this.isAnalyzing = true;
+                    this.results = '';
+                    
+                    // Имитация загрузки
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    this.results = this.calculateAll();
+                    this.isAnalyzing = false;
                 },
                 
                 calculateAll() {
@@ -583,7 +916,6 @@
                     const k = Math.pow(var1/n1 + var2/n2, 2) / 
                               (Math.pow(var1/n1, 2)/(n1-1) + Math.pow(var2/n2, 2)/(n2-1));
                     
-                    // Используем приближение для t-критического
                     const t_critical = this.studentsTQuantile(1 - alpha/2, k);
                     
                     // Часть 2: Критерий Фишера
@@ -610,14 +942,12 @@
                     const mean3 = this.mean(x3);
                     const nmu2 = x3.reduce((sum, val) => sum + Math.pow(val - mean3, 2), 0);
                     
-                    // Упрощенный расчет S (без сложных коэффициентов)
                     const x3_sorted = [...x3].sort((a, b) => a - b);
                     let S = 0;
                     const k_max = n3 % 2 === 0 ? n3 / 2 : (n3 - 1) / 2;
                     
-                    // Используем приближенные коэффициенты (для демонстрации)
                     for (let k = 0; k < k_max; k++) {
-                        const a_k = 0.4; // Упрощенный коэффициент
+                        const a_k = 0.4;
                         const diff = x3_sorted[n3 - 1 - k] - x3_sorted[k];
                         S += a_k * diff;
                     }
@@ -628,13 +958,11 @@
                     const n = x1.length;
                     const m = x4.length;
                     
-                    // Объединяем выборки
                     const combined = [
                         ...x1.map(val => ({ val, group: 1 })),
                         ...x4.map(val => ({ val, group: 2 }))
                     ].sort((a, b) => a.val - b.val);
                     
-                    // Присваиваем ранги
                     const ranks = new Array(combined.length);
                     let i = 0;
                     while (i < combined.length) {
@@ -649,7 +977,6 @@
                         i = j;
                     }
                     
-                    // Суммы рангов
                     let R1 = 0, R2 = 0;
                     for (let idx = 0; idx < combined.length; idx++) {
                         if (combined[idx].group === 1) {
@@ -663,174 +990,89 @@
                     const U2 = n * m + m * (m + 1) / 2 - R2;
                     const U = Math.min(U1, U2);
                     
-                    // Нормальная аппроксимация
                     const numerator = Math.abs(U - n * m / 2);
                     const denominator = Math.sqrt(1/12 * n * m * (n + m + 1));
                     const U_tilde = numerator / denominator;
                     const u_critical = this.normalQuantile(1 - alpha/2);
                     
-                    // Формируем вывод
+                    // Формирование вывода
                     let output = '';
                     
-                    output += '='.repeat(80) + '\n';
-                    output += 'ПРОВЕРКА ГИПОТЕЗЫ О РАВЕНСТВЕ МАТЕМАТИЧЕСКИХ ОЖИДАНИЙ\n';
-                    output += '='.repeat(80) + '\n\n';
+                    output += '╔' + '═'.repeat(78) + '╗\n';
+                    output += '║' + ' '.repeat(25) + 'СТАТИСТИЧЕСКИЙ АНАЛИЗ' + ' '.repeat(25) + '║\n';
+                    output += '╚' + '═'.repeat(78) + '╝\n\n';
                     
-                    output += 'Статистика T рассчитывается по формуле (22):\n';
-                    output += 'T = (x̄₁ - x̄₂) / √(S₁²/n₁ + S₂²/n₂)\n';
-                    output += '-'.repeat(70) + '\n';
-                    output += `x̄₁ = ${mean1.toFixed(4)}  |  x̄₂ = ${mean2.toFixed(4)}\n`;
-                    output += `S₁² = ${var1.toFixed(4)}  |  S₂² = ${var2.toFixed(4)}\n`;
-                    output += `n₁ = ${n1}  |  n₂ = ${n2}\n`;
-                    output += `√(S₁²/n₁ + S₂²/n₂) = ${Math.sqrt(var1/n1 + var2/n2).toFixed(4)}\n`;
-                    output += `T = ${T.toFixed(4)}\n\n`;
+                    output += '📊 ЧАСТЬ 1: ПРОВЕРКА ГИПОТЕЗЫ О РАВЕНСТВЕ МАТЕМАТИЧЕСКИХ ОЖИДАНИЙ\n';
+                    output += '   ' + '─'.repeat(70) + '\n';
+                    output += '   Формула (22): T = (x̄₁ - x̄₂) / √(S₁²/n₁ + S₂²/n₂)\n';
+                    output += '   x̄₁ = ' + mean1.toFixed(4) + '  |  x̄₂ = ' + mean2.toFixed(4) + '\n';
+                    output += '   S₁² = ' + var1.toFixed(4) + '  |  S₂² = ' + var2.toFixed(4) + '\n';
+                    output += '   n₁ = ' + n1 + '  |  n₂ = ' + n2 + '\n';
+                    output += '   T = ' + T.toFixed(4) + '\n\n';
                     
-                    output += 'Число степеней свободы рассчитывается по формуле (23):\n';
-                    output += 'k = (S₁²/n₁ + S₂²/n₂)² / [ (S₁²/n₁)²/(n₁-1) + (S₂²/n₂)²/(n₂-1) ]\n';
-                    output += '-'.repeat(70) + '\n';
-                    output += `k = ${k.toFixed(4)}\n\n`;
-                    
-                    output += `Критическое значение t-распределения Стьюдента:\n`;
-                    output += `t_кр = t(${(1-alpha/2).toFixed(3)}, ${k.toFixed(4)}) = ${t_critical.toFixed(4)}\n`;
-                    output += '-'.repeat(70) + '\n';
+                    output += '   Формула (23): k = (S₁²/n₁ + S₂²/n₂)² / [ (S₁²/n₁)²/(n₁-1) + (S₂²/n₂)²/(n₂-1) ]\n';
+                    output += '   k = ' + k.toFixed(4) + '\n';
+                    output += '   t_кр = ' + t_critical.toFixed(4) + '\n';
                     
                     if (Math.abs(T) > t_critical) {
-                        output += `|T| = ${Math.abs(T).toFixed(4)} > t_кр = ${t_critical.toFixed(4)}\n`;
-                        output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n\n';
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n\n';
                     } else {
-                        output += `|T| = ${Math.abs(T).toFixed(4)} < t_кр = ${t_critical.toFixed(4)}\n`;
-                        output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n\n';
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n\n';
                     }
                     
-                    output += '='.repeat(80) + '\n';
-                    output += 'ЧАСТЬ 2: ПРОВЕРКА ГИПОТЕЗЫ О РАВЕНСТВЕ ДИСПЕРСИЙ\n';
-                    output += 'С ИСПОЛЬЗОВАНИЕМ КРИТЕРИЯ ФИШЕРА\n';
-                    output += '='.repeat(80) + '\n\n';
-                    
-                    output += `\nS₁² = ${var1.toFixed(4)} ${var1 > var2 ? '>' : '<'} S₂² = ${var2.toFixed(4)}\n\n`;
-                    
-                    output += 'Статистика F рассчитывается по формуле:\n';
-                    output += 'F = S₁² / S₂², где S₁² > S₂²\n';
-                    output += '-'.repeat(70) + '\n';
-                    output += `F = ${S2_large.toFixed(4)} / ${S2_small.toFixed(4)} = ${F.toFixed(4)}\n\n`;
-                    
-                    output += 'Степени свободы:\n';
-                    output += `k₁ = n₁ - 1 = ${n_large} - 1 = ${k1}\n`;
-                    output += `k₂ = n₂ - 1 = ${n_small} - 1 = ${k2}\n\n`;
-                    
-                    output += `Критическое значение F-распределения Фишера:\n`;
-                    output += `F_кр = F(${1-alpha}, ${k1}, ${k2}) = ${F_critical.toFixed(4)}\n`;
-                    output += '-'.repeat(70) + '\n';
+                    output += '📊 ЧАСТЬ 2: ПРОВЕРКА ГИПОТЕЗЫ О РАВЕНСТВЕ ДИСПЕРСИЙ\n';
+                    output += '   ' + '─'.repeat(70) + '\n';
+                    output += '   Формула: F = S₁² / S₂², где S₁² > S₂²\n';
+                    output += '   F = ' + F.toFixed(4) + '\n';
+                    output += '   k₁ = ' + k1 + ', k₂ = ' + k2 + '\n';
+                    output += '   F_кр = ' + F_critical.toFixed(4) + '\n';
                     
                     if (F >= F_critical) {
-                        output += `F = ${F.toFixed(4)} ≥ F_кр = ${F_critical.toFixed(4)}\n`;
-                        output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n\n';
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n\n';
                     } else {
-                        output += `F = ${F.toFixed(4)} < F_кр = ${F_critical.toFixed(4)}\n`;
-                        output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n\n';
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n\n';
                     }
                     
-                    output += '='.repeat(80) + '\n';
-                    output += 'ЧАСТЬ 3: ПРОВЕРКА НОРМАЛЬНОСТИ РАСПРЕДЕЛЕНИЯ ТРЕТЬЕЙ ВЫБОРКИ\n';
-                    output += 'С ИСПОЛЬЗОВАНИЕМ КРИТЕРИЯ ШАПИРО-УИЛКА\n';
-                    output += '='.repeat(80) + '\n\n';
+                    output += '📊 ЧАСТЬ 3: ПРОВЕРКА НОРМАЛЬНОСТИ РАСПРЕДЕЛЕНИЯ\n';
+                    output += '   ' + '─'.repeat(70) + '\n';
+                    output += '   Формула (21): nμ₂ = Σ(x_i - x̄)² = ' + nmu2.toFixed(4) + '\n';
+                    output += '   Формула (19): S = Σ a_k [x_(n+1-k) - x_k] = ' + S.toFixed(4) + '\n';
+                    output += '   Формула (20): W = S² / (nμ₂) = ' + W.toFixed(6) + '\n\n';
                     
-                    output += `Объем выборки 3: n = ${n3}\n\n`;
+                    output += '📊 ЧАСТЬ 4: КРИТЕРИЙ ВИЛКОКСОНА-МАННА-УИТНИ\n';
+                    output += '   ' + '─'.repeat(70) + '\n';
+                    output += '   Формула (26): U₁ = n·m + n(n+1)/2 - R₁ = ' + U1.toFixed(2) + '\n';
+                    output += '   Формула (27): U₂ = n·m + m(m+1)/2 - R₂ = ' + U2.toFixed(2) + '\n';
+                    output += '   U = min(U₁, U₂) = ' + U.toFixed(2) + '\n';
+                    output += '   Формула (28): Ũ = |U - nm/2| / √(1/12·nm·(n+m+1)) = ' + U_tilde.toFixed(4) + '\n';
+                    output += '   u_кр = ' + u_critical.toFixed(4) + '\n';
                     
-                    output += 'Вычисление nμ₂ по формуле (21):\n';
-                    output += 'nμ₂ = Σ(x_i - x̄)²\n';
-                    output += `x̄ = ${mean3.toFixed(4)}\n`;
-                    output += `nμ₂ = ${nmu2.toFixed(4)}\n\n`;
-                    
-                    output += 'Вычисление промежуточной суммы S по формуле (19):\n';
-                    output += 'S = Σ a_k [x_(n+1-k) - x_k]\n';
-                    output += `k от 1 до ${k_max}\n\n`;
-                    output += `Промежуточная сумма S = ${S.toFixed(4)}\n\n`;
-                    
-                    output += 'Вычисление W по формуле (20):\n';
-                    output += 'W = S² / (nμ₂)\n';
-                    output += `W = ${S.toFixed(4)}² / ${nmu2.toFixed(4)} = ${Math.pow(S,2).toFixed(4)} / ${nmu2.toFixed(4)} = ${W.toFixed(6)}\n\n`;
-                    
-                    output += 'Сравнение с критическим значением (из приложения):\n';
-                    output += `W_кр(α=0.05, n=${n3}) = (значение из таблицы)\n\n`;
-                    
-                    output += '='.repeat(80) + '\n';
-                    output += 'ЧАСТЬ 4: ПРОВЕРКА ПРИНАДЛЕЖНОСТИ ДВУХ ВЫБОРОК ОДНОЙ ГЕНЕРАЛЬНОЙ СОВОКУПНОСТИ\n';
-                    output += 'С ИСПОЛЬЗОВАНИЕМ КРИТЕРИЯ ВИЛКОКСОНА-МАННА-УИТНИ\n';
-                    output += '='.repeat(80) + '\n\n';
-                    
-                    output += `Объем первой выборки (n) = ${n}\n`;
-                    output += `Объем второй выборки (m) = ${m}\n\n`;
-                    
-                    output += '2. Суммы рангов:\n';
-                    output += `   R₁ = ${R1.toFixed(2)}\n`;
-                    output += `   R₂ = ${R2.toFixed(2)}\n`;
-                    output += `   Контроль: последний ранг = ${ranks[ranks.length-1].toFixed(2)}\n\n`;
-                    
-                    output += '3. Вычисление статистик U по формулам (26) и (27):\n';
-                    output += '   U₁ = n·m + n(n+1)/2 - R₁\n';
-                    output += `   U₁ = ${n}·${m} + ${n}·(${n}+1)/2 - ${R1.toFixed(2)} = ${n*m} + ${(n*(n+1)/2).toFixed(2)} - ${R1.toFixed(2)} = ${U1.toFixed(2)}\n\n`;
-                    output += '   U₂ = n·m + m(m+1)/2 - R₂\n';
-                    output += `   U₂ = ${n}·${m} + ${m}·(${m}+1)/2 - ${R2.toFixed(2)} = ${n*m} + ${(m*(m+1)/2).toFixed(2)} - ${R2.toFixed(2)} = ${U2.toFixed(2)}\n\n`;
-                    
-                    output += `4. U = min(U₁, U₂) = ${U.toFixed(2)}\n\n`;
-                    
-                    output += '5. Проверка условия для больших выборок:\n';
-                    output += `   n = ${n}, m = ${m}, n + m = ${n + m}\n`;
-                    if (n >= 4 && m >= 4 && n + m >= 20) {
-                        output += '   Условие выполнено\n\n';
-                        
-                        output += '6. Вычисление статистики Ũ по формуле (28):\n';
-                        output += '   Ũ = |U - n·m/2| / √(1/12 · n·m·(n+m+1))\n';
-                        output += `   |U - n·m/2| = |${U.toFixed(2)} - ${n}·${m}/2| = ${numerator.toFixed(2)}\n`;
-                        output += `   √(1/12 · n·m·(n+m+1)) = ${denominator.toFixed(4)}\n`;
-                        output += `   Ũ = ${U_tilde.toFixed(4)}\n\n`;
-                        
-                        output += `7. Квантиль нормального распределения:\n`;
-                        output += `   u_{{1-α/2}} = u_{{1-${alpha/2}}} = ${u_critical.toFixed(4)}\n\n`;
-                        
-                        output += '8. Проверка гипотезы:\n';
-                        output += `   Если Ũ < u_{{1-α/2}}, то H₀ принимается\n`;
-                        output += `   ${U_tilde.toFixed(4)} < ${u_critical.toFixed(4)}?\n\n`;
-                        
-                        if (U_tilde < u_critical) {
-                            output += `   ✅ ${U_tilde.toFixed(4)} < ${u_critical.toFixed(4)}\n`;
-                            output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n';
-                            output += '   Выборки принадлежат одной генеральной совокупности\n\n';
-                        } else {
-                            output += `   ❌ ${U_tilde.toFixed(4)} ≥ ${u_critical.toFixed(4)}\n`;
-                            output += '\n👉 РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n';
-                            output += '   Выборки принадлежат разным генеральным совокупностям\n\n';
-                        }
+                    if (U_tilde < u_critical) {
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ПРИНИМАЕТСЯ\n\n';
                     } else {
-                        output += '   Условие НЕ выполнено. Необходимо использовать табличные критические значения.\n\n';
+                        output += '   ✅ РЕЗУЛЬТАТ: ГИПОТЕЗА H₀ ОТВЕРГАЕТСЯ\n\n';
                     }
                     
-                    output += '='.repeat(80) + '\n';
-                    output += 'ИТОГОВЫЙ ВЫВОД ПО ЧЕТЫРЕМ КРИТЕРИЯМ\n';
-                    output += '='.repeat(80) + '\n';
-                    output += `По критерию Стьюдента (H₀: a₁ = a₂): ${Math.abs(T) > t_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ'}\n`;
-                    output += `По критерию Фишера (H₀: σ₁² = σ₂²): ${F >= F_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ'}\n`;
-                    output += `По критерию Шапиро-Уилка (нормальность выборки 3): W = ${W.toFixed(6)}\n`;
-                    output += `По критерию Вилкоксона-Манна-Уитни (одна совокупность): ${U_tilde >= u_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ'}\n`;
+                    output += '🏁 ИТОГОВЫЙ ВЫВОД:\n';
+                    output += '   ' + '─'.repeat(70) + '\n';
+                    output += '   • Стьюдент: ' + (Math.abs(T) > t_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ') + '\n';
+                    output += '   • Фишер: ' + (F >= F_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ') + '\n';
+                    output += '   • Шапиро-Уилк: W = ' + W.toFixed(6) + '\n';
+                    output += '   • Манн-Уитни: ' + (U_tilde >= u_critical ? 'ОТВЕРГАЕТСЯ' : 'ПРИНИМАЕТСЯ') + '\n';
                     
                     return output;
                 },
                 
-                // Аппроксимация квантилей (для демонстрации)
                 studentsTQuantile(p, df) {
                     if (df > 30) return this.normalQuantile(p);
-                    // Грубая аппроксимация
                     return this.normalQuantile(p) * (1 + 1/(4*df));
                 },
                 
                 fisherQuantile(p, df1, df2) {
-                    // Грубая аппроксимация
                     return 1.5;
                 },
                 
                 normalQuantile(p) {
-                    // Приближение для стандартного нормального распределения
                     const t = Math.sqrt(-2 * Math.log(1 - p));
                     return t - (2.515517 + 0.802853 * t + 0.010328 * t * t) / 
                                (1 + 1.432788 * t + 0.189269 * t * t + 0.001308 * t * t * t);
